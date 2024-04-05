@@ -21,8 +21,8 @@ d3.json("./data/samples.json").then((jsonImport) => {
 
     // page will default to the first ID 940
     console.log("Initiating with data for subject 940")
-    var filterData = data.metadata.filter(item => item["id"] == 940);
-    Object.entries(filterData[0]).forEach(([key, value]) => {demo.append("h6").text(`${key}: ${value}`)});
+    var id940 = data.metadata.filter(item => item["id"] == 940);
+    Object.entries(id940[0]).forEach(([key, value]) => {demo.append("h6").text(`${key}: ${value}`)});
 });
 charts(940);
 
@@ -44,9 +44,10 @@ function demographics(id){
         // get data
         var data = jsonImport;
         
+        // filter for the input id
         console.log("Retrieving data for subject " + id)
-        var filterData = data.metadata.filter(item => item["id"] == id);
-        Object.entries(filterData[0]).forEach(([key, value]) => {demo.append("h6").text(`${key}: ${value}`)});
+        var filterID = data.metadata.filter(item => item["id"] == id);
+        Object.entries(filterID[0]).forEach(([key, value]) => {demo.append("h6").text(`${key}: ${value}`)});
     });
 }
 
@@ -57,12 +58,13 @@ function charts(id){
         // get data
         var data = jsonImport;
         var samples = data.samples;
+        // filter down to desired id
         var results = samples.filter(sampleObj => sampleObj.id == id);
-        var result = results[0];
+        var filterID = results[0];
         // getting values to plot
-        var otu_ids = result.otu_ids;
-        var otu_labels = result.otu_labels;
-        var sample_values = result.sample_values;
+        var otu_ids = filterID.otu_ids;
+        var otu_labels = filterID.otu_labels;
+        var sample_values = filterID.sample_values;
 
         // bar chart sliced for top 10 OTUs https://plotly.com/javascript/bar-charts/
         var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
@@ -99,8 +101,5 @@ function charts(id){
         };
 
         Plotly.newPlot('bubble', bubbleData, bubbleLayout);
-
-        // gauge chart
-
     });
 }
